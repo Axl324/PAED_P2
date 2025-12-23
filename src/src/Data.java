@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 public class Data {
 
+    private static final String dataset = "Datasets/data.txt";
+
     public Quest parseQuest (String quest_info) {
         String[] info = quest_info.split(";");
         String[] date = info[2].split("-");
@@ -21,8 +23,13 @@ public class Data {
         );
     }
 
+    public static int numQuests () throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File(dataset));
+        return  Integer.parseInt(scanner.nextLine());
+    }
+
     // Function to create the array of Quests
-    public Quest[] creatListQuests(String dataset) throws FileNotFoundException{
+    public Quest[] creatListQuests() throws FileNotFoundException{
         int i = 0;
         try {
             Scanner scanner = new Scanner(new File(dataset));
