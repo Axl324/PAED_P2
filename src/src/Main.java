@@ -5,11 +5,7 @@ public class Main {
 
     public static void main () {
         Data data = new Data();
-        try {
-            Quest[] quests = data.creatListQuests("Datasets/data.txt");
-            data.printQuests(quests);
-        } catch (FileNotFoundException e) {
-            System.out.println("Invalid file");
-        }
+        Menu menu = new Menu();
+        menu.showProblems();
     }
 }
