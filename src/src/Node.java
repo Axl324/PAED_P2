@@ -37,13 +37,13 @@ public class Node {
 
     public void updateTime (Quest quest) { this.time += quest.getEstimatedTime(); }
 
-    public void calculateTotalTime () {
+    public int calculateTotalTime () {
         float discount = 0;
         int subjectTime;
         int count;
 
         ArrayList<String> discountedSubjects = new ArrayList<>();
-        this.timeWhitDiscount = this.time;
+       int totalTime = this.time;
         for(Quest q : this.quests) {
 
             if (discountedSubjects.contains(q.getSubject())) {
@@ -66,9 +66,11 @@ public class Node {
             }
         }
 
-        //System.out.println("\nDiscounted time for next one: " + discount);
-        this.timeWhitDiscount -= Math.round(discount);
+        totalTime = this.time - Math.round(discount);
+        return totalTime;
     }
+
+
 
     public boolean validTimeSameDay() {
         int timeSameDay = 0;
