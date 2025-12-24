@@ -78,7 +78,7 @@ public class TheWallOfDeadlines {
         System.out.println("--------------------------");
     }
 
-    public void startBruteForce() throws FileNotFoundException {
+    public void start() throws FileNotFoundException {
         Node node = new Node();
         Data data = new Data();
         Quest[] quests = data.creatListQuests();
