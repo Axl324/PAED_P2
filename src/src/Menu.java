@@ -30,12 +30,13 @@ public class Menu {
     }
 
     private void showTheWallOfDeadlines() {
+        TheWallOfDeadlines theWallOfDeadlines = new TheWallOfDeadlines();
         System.out.println("\n---------|The Wall Of Dead Lines|---------\n");
         System.out.print("Chose the time limit (in minutes): ");
         try {
-            int time = scanner.nextInt();
-            TheWallOfDeadlines theWallOfDeadlines = new TheWallOfDeadlines();
-            theWallOfDeadlines.brutForce();
+            theWallOfDeadlines.maxTime = scanner.nextInt();
+            theWallOfDeadlines.startBruteForce();
+
         }catch (Exception e) {
            System.out.println("Invalid time");
         }

@@ -24,9 +24,11 @@ public class Quest {
 
     // Functions to get information from the class.
     public String getName() {return name;}
+    public String getSubject() {return subject;}
     public LocalDate getDeadline() {return deadline;}
     public int getEstimatedTime() {return estimatedTime;}
     public int getDifficulty() {return difficulty;}
     public int getProgress() {return progress;}
+    public String getImportance() {return importance;}
 
 }
