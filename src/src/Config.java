@@ -10,6 +10,8 @@ public class Config implements Comparable<Config>{
         weeks = new ArrayList<>();
         numOfWeeks = 1;
         totalQuests = 0;
+
+        // So weeks is not NULL
         weeks.add(new Node());
     }
 

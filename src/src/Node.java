@@ -15,7 +15,7 @@ public class Node {
     }
 
     public Node(Node that) {
-        this.quests = that.quests;
+        this.quests = new ArrayList<>(that.quests);
         this.questsCompleted = that.questsCompleted;
         this.timeWhitDiscount = that.timeWhitDiscount;
         this.time = that.time;
@@ -69,8 +69,6 @@ public class Node {
         totalTime = this.time - Math.round(discount);
         return totalTime;
     }
-
-
 
     public boolean validTimeSameDay() {
         int timeSameDay = 0;
