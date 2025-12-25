@@ -30,5 +30,15 @@ public class Quest {
     public int getDifficulty() {return difficulty;}
     public int getProgress() {return progress;}
     public String getImportance() {return importance;}
+    public int rarityWeight() {
+        switch (importance) {
+            case "#FF8000":
+                return 5;
+            case "#CC00FF":
+                return 2;
+            default:
+                return 1;
+        }
+    }
 
 }

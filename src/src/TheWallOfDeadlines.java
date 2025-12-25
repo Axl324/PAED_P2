@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.util.PriorityQueue;
 
 public class TheWallOfDeadlines {
     int maxTime;
@@ -66,6 +67,60 @@ public class TheWallOfDeadlines {
         newNode.quests.removeLast();
     }
 
+    private Node greedy(Quest[] quests) {
+        Node config = new Node();
+
+        preparation(quests);
+       for (int i = 0; i < quests.length; i++) {
+
+            config.addToQuests(quests[i]);
+            config.updateTime(quests[i]);
+
+            int totalTime = config.calculateTotalTime();
+
+
+            if (totalTime > maxTime || !config.validTimeSameDay()) {
+                config.quests.removeLast();
+                config.time -= quests[i].getEstimatedTime();
+
+            }
+            else {
+                config.timeWhitDiscount = totalTime;
+                config.updateQuestsCompleted(quests[i]);
+            }
+        }
+        printConfig(config);
+        return config;
+    }
+
+    private void preparation(Quest[] quests) {
+        //Insertion Sort
+        for (int i = 1; i < quests.length; i++) {
+
+            Quest currentQuest = quests[i];
+            int j = i - 1;
+
+            double currentEfficiency = (double) currentQuest.rarityWeight() / currentQuest.getEstimatedTime();
+
+            while (j >= 0) {
+                double compareEfficiency = (double) quests[j].rarityWeight() / quests[j].getEstimatedTime();
+                if (
+                        currentEfficiency > compareEfficiency ||
+                        (currentEfficiency == compareEfficiency && quests[j].rarityWeight() < currentQuest.rarityWeight()) ||
+                        (currentEfficiency == compareEfficiency && quests[j].rarityWeight() == currentQuest.rarityWeight() && quests[j].getEstimatedTime() > currentQuest.getEstimatedTime())
+                ) {
+                    quests[j + 1] = quests[j];
+                    j--;
+                }
+                else {
+                    break;
+                }
+            }
+
+            quests[j + 1] = currentQuest;
+        }
+    }
+
     private void printConfig(Node node) {
 
         System.out.println("\n--------------------------");
@@ -84,6 +139,6 @@ public class TheWallOfDeadlines {
         Quest[] quests = data.creatListQuests();
         maxQuests = 0;
 
-        bruteForce(quests, 0, node);
+        greedy(quests);
     }
 }
