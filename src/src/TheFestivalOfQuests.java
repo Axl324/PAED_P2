@@ -1,63 +1,80 @@
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 
 public class TheFestivalOfQuests {
-    List<Node> bestComb;            // Best combination of quests per week
-    int bestWeekNum;
-    int maxTime = 1200;
+    List<Node> bestComb;            // Weeks with the Best combination of quests
+    int bestWeekNum;                // Best number of weeks
+    int maxTime = 1200;             // Max time 20 hours
 
-    public void start () throws FileNotFoundException {
+
+    public void start(int option) throws FileNotFoundException {
+        Node node = new Node();
         Data data = new Data();
         Quest[] quests = data.creatListQuests();
-
         bestComb = new ArrayList<>();
-        bestComb.add(new Node());
-        bestWeekNum = 1;
-        //branchAndBound(quests);
 
-        List<Quest> highImportance = new ArrayList<>();
-        List<Quest> lowImportance = new ArrayList<>();
+        // Sort quests by importance (Legendary -> Epic -> Common)
+        node.sortByImportance(quests);
 
-        for (Quest q : quests) {
-            if (q.rarityWeight() == 2 || q.rarityWeight() == 5) {
-                highImportance.add(q);
-            } else {
-                lowImportance.add(q);
-            }
+        switch(option) {
+            case 1: // Greedy Algorithm
+                bestComb.add(node);
+                bestWeekNum = 1;
+
+                greedy(quests);
+                break;
+            case 2: // Backtracking Algorithm
+                bestWeekNum = Integer.MAX_VALUE;
+                List<Node> currSolution = new ArrayList<>();
+                currSolution.add(node);
+
+                backtracking(quests, 0, currSolution);
+                break;
         }
-
-        Quest[] high = highImportance.toArray(new Quest[0]);
-        Quest[] low = lowImportance.toArray(new Quest[0]);
-
-        greedy(high);
-        greedy(low);
 
         printSolution();
     }
 
     private void greedy(Quest[] quests) {
+        // Sort quests by efficiency (Relation between importance and time)
         preparation(quests);
 
+        //Analyze and prioritize important quests first
+        for (Quest quest : quests) {
+            // Find the best possible week to place the quest
+            Node bestWeek = findBestWeek(quest);
+
+            if (quest.rarityWeight() == 2 || quest.rarityWeight() == 5) {
+                if (bestWeek != null) {
+                    addQuestToWeek(bestWeek, quest);
+
+                } else {
+                    Node newWeek = new Node();
+                    addQuestToWeek(newWeek, quest);
+
+                    bestComb.add(newWeek);
+                    bestWeekNum++;
+                }
+            }
+        }
+
+        // Analyze common quests
         for (Quest quest : quests) {
             Node bestWeek = findBestWeek(quest);
 
-            if (bestWeek != null) {
-                bestWeek.addToQuests(quest);
-                bestWeek.updateTime(quest);
-                bestWeek.updateQuestsCompleted(quest);
-            } else {
-                Node newWeek = new Node();
-                newWeek.addToQuests(quest);
-                newWeek.updateTime(quest);
-                newWeek.updateQuestsCompleted(quest);
+            if (quest.rarityWeight() == 1) {
+                if (bestWeek != null) {
+                    addQuestToWeek(bestWeek, quest);
 
-                bestComb.add(newWeek);
-                bestWeekNum++;
+                } else {
+                    Node newWeek = new Node();
+                    addQuestToWeek(newWeek, quest);
+
+                    bestComb.add(newWeek);
+                    bestWeekNum++;
+                }
             }
-
         }
     }
 
@@ -83,6 +100,7 @@ public class TheFestivalOfQuests {
         int minRemainingTime = Integer.MAX_VALUE;
 
         for (Node week : bestComb) {
+            // If common, check if week has less than 6
             if (quest.rarityWeight() == 1 && totalCommonQuest(week) >= 6) {
                 continue;
             }
@@ -102,6 +120,84 @@ public class TheFestivalOfQuests {
         return bestWeek;
     }
 
+    private void backtracking(Quest[] quests, int level, List<Node> currSolution) {
+        // Final call - Decide if the solution is better
+        if (level >= quests.length) {
+            if (currSolution.size() < bestWeekNum) {
+                bestWeekNum = currSolution.size();
+
+                bestComb.clear();
+                for (Node node : currSolution) {
+                    bestComb.add(new Node(node));
+                }
+
+                System.out.println("New best solution found with " + bestWeekNum + " weeks");
+            }
+            return;
+        }
+
+        // Prune if solution is worse
+        if (currSolution.size() >= bestWeekNum) {
+            return;
+        }
+
+        Quest currQuest = quests[level];
+
+        //Prune if there are more epic/legendary quests
+        if (currQuest.rarityWeight() == 1 && hasMoreImportantQuests(level, quests)) {
+            return;
+        }
+
+        // Add to existing week
+        for (int i = 0; i < currSolution.size(); i++) {
+            Node week = currSolution.get(i);
+
+            // Chek if time doesn't exceed
+            if (week.time + currQuest.getEstimatedTime() <= maxTime) {
+                // If common, check for number of common quests
+                if (currQuest.rarityWeight() == 1 && totalCommonQuest(week) >= 6) {
+                    continue;
+                }
+
+                addQuestToWeek(week, currQuest);
+                backtracking(quests, level + 1, currSolution);
+
+                // Remove quest
+                week.quests.removeLast();
+                week.time -= currQuest.getEstimatedTime();
+                week.questsCompleted -= currQuest.rarityWeight();
+            }
+        }
+
+        // Create a new week
+        if (currSolution.size() + 1 < bestWeekNum) {
+            Node newWeek = new Node();
+            addQuestToWeek(newWeek, currQuest);
+
+            currSolution.add(newWeek);
+            backtracking(quests, level + 1, currSolution);
+
+            currSolution.removeLast();
+        }
+
+    }
+
+    private boolean hasMoreImportantQuests (int level, Quest[] quests) {
+        for (int i = level + 1; i < quests.length; i++) {
+            if (quests[i].rarityWeight() == 2 || quests[i].rarityWeight() == 5) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void addQuestToWeek (Node week, Quest quest) {
+        week.addToQuests(quest);
+        week.updateTime(quest);
+        week.updateQuestsCompleted(quest);
+    }
+
     private int totalCommonQuest (Node week) {
         int total = 0;
 
@@ -113,60 +209,14 @@ public class TheFestivalOfQuests {
 
         return total;
     }
-/*
-    private void  branchAndBound(Quest[] quests) {
-       PriorityQueue<Config> queue = new PriorityQueue<>(
-               Comparator.comparing(
-                       config -> config.numOfWeeks));
 
-       Config first = new Config();
-       queue.offer(first);
-
-        while (!queue.isEmpty()){
-            Config current = queue.poll();
-
-            List<Config> children = current.expand(quests);
-
-            for (Config child : children) {
-                if (child.isFull(quests)) {
-                    // Check for the number of weeks in total
-                    if (checkPriority(child)) {
-                        bestComb = child.weeks;
-                        bestWeekNum = child.numOfWeeks;
-
-                        //System.out.println("Best comb with " + bestWeekNum + " weeks");
-                    }
-                } else {
-                    if (checkPriority(child)) {
-                        queue.offer(child);
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean checkPriority (Config current) {
-        if (current.numOfWeeks < bestWeekNum) {
-            return true;
-
-        } else if (current.numOfWeeks == bestWeekNum) {
-            for (int i = 0; i < current.numOfWeeks; i++) {
-                if (current.weeks.get(i).questsCompleted < bestComb.get(i).questsCompleted) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-*/
     private void printSolution() {
         if (bestComb.isEmpty()) {
-            System.out.println("No solution found!");
+            System.out.println("\nNo solution found!");
             return;
         }
 
-        System.out.println("=== BEST SOLUTION ===");
+        System.out.println("\n=== BEST SOLUTION ===");
         System.out.println("Total weeks: " + bestWeekNum);
 
         for (int i = 0; i < bestComb.size(); i++) {

@@ -95,4 +95,19 @@ public class Node {
         return true;
     }
 
+    public void sortByImportance(Quest[] quests) {
+        // Insertion Sort
+        for (int i = 1; i < quests.length; i++) {
+            Quest temp = quests[i];
+            int j = i - 1;
+
+            while (j >= 0 && quests[j].rarityWeight() < temp.rarityWeight()) {
+                quests[j + 1] = quests[j];
+                j--;
+            }
+
+            quests[j + 1] = temp;
+        }
+
+    }
 }
