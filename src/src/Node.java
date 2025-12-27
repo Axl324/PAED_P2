@@ -6,19 +6,24 @@ public class Node {
     int time;
     int timeWhitDiscount;
     int questsCompleted;
+    int estimatedQuestsCompleted;
+    int level;
 
     public Node () {
         this.quests = new ArrayList<>();
         this.time = 0;
         this.timeWhitDiscount = 0;
         this.questsCompleted = 0;
+        this.level = 0;
     }
 
     public Node(Node that) {
-        this.quests = that.quests;
+        this.quests = new ArrayList<>(that.quests);
         this.questsCompleted = that.questsCompleted;
         this.timeWhitDiscount = that.timeWhitDiscount;
         this.time = that.time;
+        this.level = that.level;
+
     }
 
     public void addToQuests (Quest quest) {
@@ -70,8 +75,6 @@ public class Node {
         return totalTime;
     }
 
-
-
     public boolean validTimeSameDay() {
         int timeSameDay = 0;
         ArrayList<LocalDate> checkedDeadlines = new ArrayList<>();
@@ -96,4 +99,5 @@ public class Node {
         }
         return true;
     }
+
 }

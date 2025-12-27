@@ -1,4 +1,7 @@
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class TheWallOfDeadlines {
@@ -12,7 +15,7 @@ public class TheWallOfDeadlines {
 
         // Final call
         if (level == quests.length) {
-            node.calculateTotalTime();
+            node.timeWhitDiscount = node.calculateTotalTime();
             if (node.timeWhitDiscount <= maxTime && node.questsCompleted > maxQuests) {
                 maxQuests = node.questsCompleted;
                 printConfig(node);
@@ -67,6 +70,76 @@ public class TheWallOfDeadlines {
         newNode.quests.removeLast();
     }
 
+    private void branchAndBound(Quest[] quests) {
+
+        PriorityQueue<Node> configs = new PriorityQueue<>(Comparator.comparingDouble(n -> -n.estimatedQuestsCompleted));
+
+        Node firstConfig = greedy(quests);
+        printConfig(firstConfig);
+        maxQuests = firstConfig.questsCompleted;
+
+        Node root = new Node();
+        root.level = 0;
+        root.estimatedQuestsCompleted = estimateCost(quests, root);
+        configs.add(root);
+
+        while (!configs.isEmpty()) {
+            Node config = configs.poll();
+
+            if (config.estimatedQuestsCompleted > maxQuests) {
+                if (config.level == quests.length) {
+                    config.timeWhitDiscount = config.calculateTotalTime();
+                    if (config.timeWhitDiscount <= maxTime && config.validTimeSameDay() && config.questsCompleted > maxQuests) {
+                        maxQuests = config.questsCompleted;
+                        printConfig(config);
+                    }
+                }
+                else {
+                    List<Node> childrens = expand(quests, config);
+
+                    for (int i = 0; i < childrens.size(); i++) {
+                        Node child = childrens.get(i);
+
+                        child.estimatedQuestsCompleted = estimateCost(quests, child);
+
+                        if (child.estimatedQuestsCompleted > maxQuests) {
+                            configs.add(child);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    private int estimateCost(Quest[] quests, Node config) {
+        int remaining = quests.length - config.level;
+        return config.questsCompleted + remaining * 5;
+    }
+
+    private List<Node> expand (Quest[] quests, Node config) {
+        List<Node> expandedConfig = new ArrayList<>();
+        Quest quest = quests[config.level];
+
+        Node auxConfig = new Node(config);
+        auxConfig.addToQuests(quest);
+        auxConfig.updateTime(quest);
+        auxConfig.updateQuestsCompleted(quest);
+        auxConfig.level++;
+        auxConfig.timeWhitDiscount = auxConfig.calculateTotalTime();
+
+        if (auxConfig.validTimeSameDay() && auxConfig.timeWhitDiscount <= maxTime) {
+            expandedConfig.add(auxConfig);
+        }
+
+        Node skip = new Node(config);
+
+        skip.level++;
+        expandedConfig.add(skip);
+
+        return expandedConfig;
+    }
+
     private Node greedy(Quest[] quests) {
         Node config = new Node();
 
@@ -89,7 +162,7 @@ public class TheWallOfDeadlines {
                 config.updateQuestsCompleted(quests[i]);
             }
         }
-        printConfig(config);
+        //printConfig(config);
         return config;
     }
 
@@ -133,12 +206,13 @@ public class TheWallOfDeadlines {
         System.out.println("--------------------------");
     }
 
-    public void startBruteForce() throws FileNotFoundException {
+    public void start() throws FileNotFoundException {
         Node node = new Node();
         Data data = new Data();
         Quest[] quests = data.creatListQuests();
         maxQuests = 0;
 
-        greedy(quests);
+        //backtracking(quests, 0, node);
+        branchAndBound(quests);
     }
 }
