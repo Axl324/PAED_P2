@@ -5,24 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="09b695e3-b94a-498a-9854-fb78cb37a761" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Datasets/datasetL.paed" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Datasets/datasetM.paed" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Datasets/datasetS.paed" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Datasets/datasetXS.paed" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Datasets/datasetXXXL.paed" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/src/Config.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/src/TheFestivalOfQuests.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/src/Config.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/src/TheFestivalOfQuests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Datasets/data.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Datasets/dataset.paed" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/src/Data.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/src/Data.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/src/Menu.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/src/Menu.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/src/Node.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/src/Node.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/src/TheWallOfDeadlines.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/src/TheWallOfDeadlines.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/src/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/src/Data.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/src/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/src/Menu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/src/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/src/Node.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/src/TheWallOfDeadlines.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/src/TheWallOfDeadlines.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,7 +56,7 @@
       <option name="presentableId" value="Default" />
       <updated>1766746036710</updated>
       <workItem from="1766746038561" duration="7667000" />
-      <workItem from="1766837268557" duration="2849000" />
+      <workItem from="1766837268557" duration="3198000" />
     </task>
     <servers />
   </component>

@@ -212,7 +212,7 @@ public class TheWallOfDeadlines {
         Quest[] quests = data.creatListQuests();
         maxQuests = 0;
 
-        //backtracking(quests, 0, node);
-        branchAndBound(quests);
+        backtracking(quests, 0, node);
+        //branchAndBound(quests);
     }
 }
