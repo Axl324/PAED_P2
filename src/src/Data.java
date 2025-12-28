@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Data {
 
-    private static final String dataset = "Datasets/data.txt";
+    private static final String dataset = "Datasets/datasetL.paed";
 
     public Quest parseQuest (String quest_info) {
         String[] info = quest_info.split(";");
