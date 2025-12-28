@@ -8,14 +8,17 @@ public class TheFestivalOfQuests {
     List<Node> bestComb;            // Best combination of quests per week
     int bestWeekNum;
     int maxTime = 1200;
+    int numIterations;
 
     public void start () throws FileNotFoundException {
         Data data = new Data();
         Quest[] quests = data.creatListQuests();
-
+        numIterations = 0;
         bestComb = new ArrayList<>();
         bestComb.add(new Node());
         bestWeekNum = 1;
+
+        long start = System.nanoTime();
         //branchAndBound(quests);
 
         List<Quest> highImportance = new ArrayList<>();
@@ -35,7 +38,11 @@ public class TheFestivalOfQuests {
         greedy(high);
         greedy(low);
 
+        long end = System.nanoTime();
+
         printSolution();
+        System.out.println("Time: " + (end - start)/1000000 + " ms");
+        System.out.println("Num Iterations: " + numIterations);
     }
 
     private void greedy(Quest[] quests) {
@@ -57,7 +64,7 @@ public class TheFestivalOfQuests {
                 bestComb.add(newWeek);
                 bestWeekNum++;
             }
-
+            numIterations++;
         }
     }
 

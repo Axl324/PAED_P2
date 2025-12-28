@@ -7,8 +7,13 @@ import java.util.PriorityQueue;
 public class TheWallOfDeadlines {
     int maxTime;
     int maxQuests;
+    int numIterations;
+    Node bestConfig;
 
     private void backtracking(Quest[] quests, int level, Node node) {
+
+        numIterations++;
+
         if (!node.validTimeSameDay()) {
             return;
         }
@@ -18,7 +23,7 @@ public class TheWallOfDeadlines {
             node.timeWhitDiscount = node.calculateTotalTime();
             if (node.timeWhitDiscount <= maxTime && node.questsCompleted > maxQuests) {
                 maxQuests = node.questsCompleted;
-                printConfig(node);
+                bestConfig = new Node(node);
             }
             return;
         }
@@ -43,12 +48,14 @@ public class TheWallOfDeadlines {
     }
 
     private void bruteForce(Quest[] quests, int level, Node node) {
+        numIterations++;
+
         // Final call
         if (level == quests.length) {
-            node.calculateTotalTime();
+            node.timeWhitDiscount = node.calculateTotalTime();
             if (node.timeWhitDiscount <= maxTime && node.questsCompleted > maxQuests && node.validTimeSameDay()) {
                 maxQuests = node.questsCompleted;
-                printConfig(node);
+                bestConfig = new Node(node);
             }
             return;
         }
@@ -70,12 +77,13 @@ public class TheWallOfDeadlines {
         newNode.quests.removeLast();
     }
 
-    private void branchAndBound(Quest[] quests) {
-
+    private Node branchAndBound(Quest[] quests) {
+        Node bestNode = new Node();
         PriorityQueue<Node> configs = new PriorityQueue<>(Comparator.comparingDouble(n -> -n.estimatedQuestsCompleted));
 
         Node firstConfig = greedy(quests);
-        printConfig(firstConfig);
+        //printConfig(firstConfig);
+        bestNode = firstConfig;
         maxQuests = firstConfig.questsCompleted;
 
         Node root = new Node();
@@ -84,6 +92,7 @@ public class TheWallOfDeadlines {
         configs.add(root);
 
         while (!configs.isEmpty()) {
+            numIterations++;
             Node config = configs.poll();
 
             if (config.estimatedQuestsCompleted > maxQuests) {
@@ -91,14 +100,14 @@ public class TheWallOfDeadlines {
                     config.timeWhitDiscount = config.calculateTotalTime();
                     if (config.timeWhitDiscount <= maxTime && config.validTimeSameDay() && config.questsCompleted > maxQuests) {
                         maxQuests = config.questsCompleted;
-                        printConfig(config);
+                        bestNode = new Node(config);
                     }
                 }
                 else {
-                    List<Node> childrens = expand(quests, config);
+                    List<Node> children = expand(quests, config);
 
-                    for (int i = 0; i < childrens.size(); i++) {
-                        Node child = childrens.get(i);
+                    for (int i = 0; i < children.size(); i++) {
+                        Node child = children.get(i);
 
                         child.estimatedQuestsCompleted = estimateCost(quests, child);
 
@@ -109,6 +118,8 @@ public class TheWallOfDeadlines {
                 }
             }
         }
+
+        return bestNode;
     }
 
 
@@ -161,8 +172,8 @@ public class TheWallOfDeadlines {
                 config.timeWhitDiscount = totalTime;
                 config.updateQuestsCompleted(quests[i]);
             }
+           numIterations++;
         }
-        //printConfig(config);
         return config;
     }
 
@@ -176,6 +187,7 @@ public class TheWallOfDeadlines {
             double currentEfficiency = (double) currentQuest.rarityWeight() / currentQuest.getEstimatedTime();
 
             while (j >= 0) {
+                numIterations++;
                 double compareEfficiency = (double) quests[j].rarityWeight() / quests[j].getEstimatedTime();
                 if (
                         currentEfficiency > compareEfficiency ||
@@ -212,7 +224,20 @@ public class TheWallOfDeadlines {
         Quest[] quests = data.creatListQuests();
         maxQuests = 0;
 
+
+        numIterations = 0;
+        long start = System.nanoTime();
+
+        //bruteForce(quests, 0, node);
         backtracking(quests, 0, node);
-        //branchAndBound(quests);
+        //bestConfig = branchAndBound(quests);
+        //bestConfig = greedy(quests);
+
+        long end = System.nanoTime();
+        printConfig(bestConfig);
+        System.out.println("Time: " + (end - start)/1000000 + " ms");
+        System.out.println("Num Iterations: " + numIterations);
+
+
     }
 }

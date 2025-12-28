@@ -5,7 +5,9 @@ import java.util.Scanner;
 
 public class Data {
 
-    private static final String dataset = "Datasets/datasetL.paed";
+    private static final String dataset = "Datasets/datasetXXXL.paed";
+    private static final int questLength =1000;
+
 
     public Quest parseQuest (String quest_info) {
         String[] info = quest_info.split(";");
@@ -34,9 +36,9 @@ public class Data {
         try {
             Scanner scanner = new Scanner(new File(dataset));
             int numQuests =  Integer.parseInt(scanner.nextLine());
-            Quest[] quests = new Quest[numQuests];
+            Quest[] quests = new Quest[questLength];
 
-            while (i < quests.length) {
+            while (i < questLength) {
                 String aux = scanner.nextLine();
                 quests[i] = parseQuest(aux);
                 i++;
