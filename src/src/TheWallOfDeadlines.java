@@ -10,6 +10,35 @@ public class TheWallOfDeadlines {
     int numIterations;
     Node bestConfig;
 
+    public void start(int option) throws FileNotFoundException {
+        Node node = new Node();
+        Data data = new Data();
+        Quest[] quests = data.creatListQuests();
+        maxQuests = 0;
+
+        numIterations = 0;
+        long start = System.nanoTime();
+
+        switch (option) {
+            case 1: // Greedy Algorithm
+                bestConfig = greedy(quests);
+                break;
+            case 2: // Backtracking Algorithm
+                backtracking(quests, 0, node);
+                break;
+            case 3: // Brute Force
+                bruteForce(quests, 0, node);
+                break;
+            case 4: // Branch and Bound
+                bestConfig = branchAndBound(quests);
+        }
+
+        long end = System.nanoTime();
+        printConfig(bestConfig);
+        System.out.println("\n========== ALGORITHM ANALYSIS ==========");
+        System.out.println("\tTime: " + (end - start)/1000000 + " ms");
+        System.out.println("\tNum Iterations: " + numIterations);
+    }
     private void backtracking(Quest[] quests, int level, Node node) {
 
         numIterations++;
@@ -216,28 +245,5 @@ public class TheWallOfDeadlines {
         }
         System.out.println("\nTotal time: " + node.timeWhitDiscount + "\nQuest completed: " + node.questsCompleted);
         System.out.println("--------------------------");
-    }
-
-    public void start() throws FileNotFoundException {
-        Node node = new Node();
-        Data data = new Data();
-        Quest[] quests = data.creatListQuests();
-        maxQuests = 0;
-
-
-        numIterations = 0;
-        long start = System.nanoTime();
-
-        //bruteForce(quests, 0, node);
-        backtracking(quests, 0, node);
-        //bestConfig = branchAndBound(quests);
-        //bestConfig = greedy(quests);
-
-        long end = System.nanoTime();
-        printConfig(bestConfig);
-        System.out.println("Time: " + (end - start)/1000000 + " ms");
-        System.out.println("Num Iterations: " + numIterations);
-
-
     }
 }

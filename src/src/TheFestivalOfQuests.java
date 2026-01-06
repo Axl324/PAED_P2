@@ -33,7 +33,7 @@ public class TheFestivalOfQuests {
                 bestWeekNum = Integer.MAX_VALUE;
                 backtracking(quests, 0, currSolution);
                 break;
-            case 3:
+            case 3: // Brute Force
                 bestWeekNum = Integer.MAX_VALUE;
                 bruteForce(quests, 0, currSolution);
                 break;
@@ -42,8 +42,9 @@ public class TheFestivalOfQuests {
         long end = System.nanoTime();
 
         printSolution();
-        System.out.println("Time: " + (end - start)/1000000 + " ms");
-        System.out.println("Num Iterations: " + numIterations);
+        System.out.println("\n========== ALGORITHM ANALYSIS ==========");
+        System.out.println("\tTime: " + (end - start)/1000000 + " ms");
+        System.out.println("\tNum Iterations: " + numIterations);
     }
 
     private void greedy(Quest[] quests) {
@@ -281,8 +282,8 @@ public class TheFestivalOfQuests {
         for (int i = 0; i < bestComb.size(); i++) {
             Node week = bestComb.get(i);
             System.out.println("\nWeek " + (i + 1) + ":");
-            System.out.println("  Time: " + week.time + " minutes");
-            System.out.println("  Quests:");
+            System.out.println("\tTime: " + week.time + " minutes");
+            System.out.println("\tQuests:");
 
             for (Quest q : week.quests) {
                 System.out.println(q.getImportance() + "\t(" + q.getEstimatedTime() + " min) \t" + q.getName());

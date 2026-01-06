@@ -34,10 +34,29 @@ public class Menu {
         TheWallOfDeadlines theWallOfDeadlines = new TheWallOfDeadlines();
         System.out.println("\n---------|The Wall Of Deadlines|---------\n");
         System.out.print("Chose the time limit (in minutes): ");
+        theWallOfDeadlines.maxTime = scanner.nextInt();
         try {
-            theWallOfDeadlines.maxTime = scanner.nextInt();
-            theWallOfDeadlines.start();
+            while (true) {
+                System.out.println("\nChoose which strategy do you want to use:");
+                System.out.println("\t1. Greedy");
+                System.out.println("\t2. Backtracking");
+                System.out.println("\t3. Brute Force");
+                System.out.println("\t4. Branch and Bound");
 
+                System.out.print("Choose an option: ");
+                try {
+                    int option = scanner.nextInt();
+                    if (option > 0 && option < 5) {
+                        theWallOfDeadlines.start(option);
+                        break;
+                    } else {
+                        System.out.println("Invalid intput\n");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Invalid intput, must be a number\n");
+                    scanner.nextLine();
+                }
+            }
         }catch (Exception e) {
            System.out.println("Invalid time");
         }
