@@ -1,5 +1,3 @@
-import java.awt.desktop.SystemEventListener;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Menu {
@@ -46,7 +44,7 @@ public class Menu {
 
     }
 
-    private void showTheFestivalOfInfiniteQuests() throws FileNotFoundException {
+    private void showTheFestivalOfInfiniteQuests() {
         TheFestivalOfQuests theFestivalOfQuests = new TheFestivalOfQuests();
 
         while (true) {
@@ -54,12 +52,13 @@ public class Menu {
             System.out.println("Choose which strategy do you want to use:");
             System.out.println("\t1. Greedy");
             System.out.println("\t2. Backtracking");
+            System.out.println("\t3. Brute Force");
 
             System.out.print("Choose an option: ");
 
             try {
                 int option = scanner.nextInt();
-                if (option == 1 || option == 2) {
+                if (option > 0 && option < 4) {
                     theFestivalOfQuests.start(option);
                     break;
                 } else {

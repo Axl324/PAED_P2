@@ -12,6 +12,8 @@ public class TheFestivalOfQuests {
         Node node = new Node();
         Data data = new Data();
         Quest[] quests = data.creatListQuests();
+        List<Node> currSolution = new ArrayList<>();
+        currSolution.add(node);
         numIterations = 0;
 
         bestComb = new ArrayList<>();
@@ -29,10 +31,11 @@ public class TheFestivalOfQuests {
                 break;
             case 2: // Backtracking Algorithm
                 bestWeekNum = Integer.MAX_VALUE;
-                List<Node> currSolution = new ArrayList<>();
-                currSolution.add(node);
-
                 backtracking(quests, 0, currSolution);
+                break;
+            case 3:
+                bestWeekNum = Integer.MAX_VALUE;
+                bruteForce(quests, 0, currSolution);
                 break;
         }
 
@@ -49,6 +52,7 @@ public class TheFestivalOfQuests {
 
         //Analyze and prioritize important quests first
         for (Quest quest : quests) {
+            numIterations++;
             // Find the best possible week to place the quest
             Node bestWeek = findBestWeek(quest);
 
@@ -68,6 +72,7 @@ public class TheFestivalOfQuests {
 
         // Analyze common quests
         for (Quest quest : quests) {
+            numIterations++;
             Node bestWeek = findBestWeek(quest);
 
             if (quest.rarityWeight() == 1) {
@@ -82,7 +87,6 @@ public class TheFestivalOfQuests {
                     bestWeekNum++;
                 }
             }
-            numIterations++;
         }
     }
 
@@ -129,6 +133,7 @@ public class TheFestivalOfQuests {
     }
 
     private void backtracking(Quest[] quests, int level, List<Node> currSolution) {
+        numIterations++;
         // Final call - Decide if the solution is better
         if (level >= quests.length) {
             if (currSolution.size() < bestWeekNum) {
@@ -180,14 +185,12 @@ public class TheFestivalOfQuests {
         // Create a new week
         if (currSolution.size() + 1 < bestWeekNum) {
             Node newWeek = new Node();
-            addQuestToWeek(newWeek, currQuest);
 
+            addQuestToWeek(newWeek, currQuest);
             currSolution.add(newWeek);
             backtracking(quests, level + 1, currSolution);
-
             currSolution.removeLast();
         }
-
     }
 
     private boolean hasMoreImportantQuests (int level, Quest[] quests) {
@@ -216,6 +219,54 @@ public class TheFestivalOfQuests {
         }
 
         return total;
+    }
+
+
+    private void bruteForce (Quest[] quests, int level, List<Node> currSolution) {
+        numIterations++;
+        // Final call - Decide if the solution is better
+        if (level >= quests.length) {
+            if (currSolution.size() < bestWeekNum) {
+                bestWeekNum = currSolution.size();
+
+                bestComb.clear();
+                for (Node node : currSolution) {
+                    bestComb.add(new Node(node));
+                }
+
+                System.out.println("New best solution found with " + bestWeekNum + " weeks");
+            }
+            return;
+        }
+
+        Quest currQuest = quests[level];
+
+        // Add to existing week
+        for (int i = 0; i < currSolution.size(); i++) {
+            Node week = currSolution.get(i);
+
+            // Chek if time doesn't exceed
+            if (week.time + currQuest.getEstimatedTime() <= maxTime) {
+                // If common, check for number of common quests
+                if(!(currQuest.rarityWeight() == 1 && totalCommonQuest(week) >= 6)) {
+                    addQuestToWeek(week, currQuest);
+                    bruteForce(quests, level + 1, currSolution);
+
+                    // Remove quest
+                    week.quests.removeLast();
+                    week.time -= currQuest.getEstimatedTime();
+                    week.questsCompleted -= currQuest.rarityWeight();
+                }
+            }
+        }
+
+        // Create new week
+        Node newWeek = new Node();
+
+        addQuestToWeek(newWeek, currQuest);
+        currSolution.add(newWeek);
+        bruteForce(quests, level + 1, currSolution);
+        currSolution.removeLast();
     }
 
     private void printSolution() {

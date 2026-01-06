@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class Data {
 
-    private static final String dataset = "Datasets/datasetXXXL.paed";
-    private static final int questLength =1000;
+    private static final String dataset = "Datasets/datasetXS.paed";
+    private static final int questLength = 10;
 
 
     public Quest parseQuest (String quest_info) {
